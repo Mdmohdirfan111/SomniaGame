@@ -244,3 +244,4 @@ export function drawParticles(ctx, particles) {
         ctx.globalAlpha = 1;
     });
 }
+
