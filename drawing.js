@@ -1,6 +1,4 @@
-// ===================================================================================
-// DRAWING.JS - Saare visual elements (art, effects) yahan hain
-// ===================================================================================
+console.log("SUCCESS: drawing.js file has been loaded and executed!");
 
 let backgroundElements = [];
 let frame = 0; // Animation ke liye frame counter
@@ -244,4 +242,3 @@ export function drawParticles(ctx, particles) {
         ctx.globalAlpha = 1;
     });
 }
-
