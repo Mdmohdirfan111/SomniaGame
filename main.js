@@ -1,19 +1,28 @@
-// ===================================================================================
-// MAIN.JS - Game ka Core Logic
-// ===================================================================================
+console.log("Checkpoint 1: main.js script has started.");
 
 import { connectWallet, disconnectWallet, mintNFTReward, sayGMOnchain, walletState } from './wallet.js';
+console.log("Checkpoint 2: wallet.js imported successfully.");
+
 import { stageData } from './stages.js';
+console.log("Checkpoint 3: stages.js imported successfully.");
+
 import { 
     initializeBackground, drawBackground, drawPlayer, drawEnemy, 
     drawPlatform, drawFlag, drawParticles, drawCoin, drawScore
 } from './drawing.js';
+console.log("Checkpoint 4: drawing.js imported successfully.");
 
 window.onload = () => {
+    console.log("Checkpoint 5: Page has loaded (window.onload).");
+    
     // === PART 1: SETUP ===
     const landingPage = document.getElementById('landing-page');
     const gameContainer = document.getElementById('game-container');
     const canvas = document.getElementById('gameCanvas');
+    if (!canvas) {
+        console.error("FATAL ERROR: Canvas element not found!");
+        return;
+    }
     const ctx = canvas.getContext('2d');
     const connectWalletBtn = document.getElementById('connectWalletBtn');
     const playGameBtn = document.getElementById('playGameBtn');
@@ -35,7 +44,6 @@ window.onload = () => {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
     initializeBackground(canvas);
-
 
     // === PART 2: UI & WALLET EVENT LISTENERS ===
     function showMessage(title, buttonText, onButtonClick) {
@@ -66,10 +74,12 @@ window.onload = () => {
     });
 
     playGameBtn.addEventListener('click', () => {
+        console.log("Checkpoint 6: 'PLAY GAME' button was clicked!");
         landingPage.style.display = 'none';
         gameContainer.style.display = 'flex';
         initStage(1);
         if (!gameRunning) {
+            console.log("Checkpoint 8: Starting game loop for the first time.");
             gameLoop();
         }
     });
@@ -91,8 +101,10 @@ window.onload = () => {
 
     // === PART 3: CORE GAME ENGINE ===
     function initStage(levelNumber) {
+        console.log("Checkpoint 7: initStage() function called for level", levelNumber);
         const level = stageData.find(s => s.level === levelNumber);
         if (!level) { 
+            console.error("ERROR: Level data not found for level:", levelNumber);
             gameRunning = false;
             showMessage("YOU WIN!", "Play Again?", () => location.reload());
             return;
@@ -118,6 +130,7 @@ window.onload = () => {
         });
         
         player = { x: level.playerStart.x, y: level.playerStart.y, width: 40, height: 60, dx: 0, dy: 0, speed: 6, jumpPower: -16, onGround: false, facing: 1 };
+        console.log("Player object created:", player);
         camera = { 
             x: 0, y: 0, width: canvas.width, height: canvas.height, 
             update: function () {
