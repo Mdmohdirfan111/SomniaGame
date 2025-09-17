@@ -1,12 +1,7 @@
 // ===================================================================================
 // MAIN.JS - Game ka Core Logic
-//
-// Changes:
-// 1. "sayGMOnchain" function ko import kiya gaya.
-// 2. Naye "GM Somnia" button ke liye event listener add kiya gaya.
 // ===================================================================================
 
-// Wallet, Stages, aur Drawing files se zaroori cheezein import karna
 import { connectWallet, disconnectWallet, mintNFTReward, sayGMOnchain, walletState } from './wallet.js';
 import { stageData } from './stages.js';
 import { 
@@ -14,7 +9,6 @@ import {
     drawPlatform, drawFlag, drawParticles, drawCoin, drawScore
 } from './drawing.js';
 
-// Page load hote hi yeh function chalega
 window.onload = () => {
     // === PART 1: SETUP ===
     const landingPage = document.getElementById('landing-page');
@@ -23,7 +17,6 @@ window.onload = () => {
     const ctx = canvas.getContext('2d');
     const connectWalletBtn = document.getElementById('connectWalletBtn');
     const playGameBtn = document.getElementById('playGameBtn');
-    // Button ID "getGmonadBtn" ko "gmSomniaBtn" se badla gaya
     const gmSomniaBtn = document.getElementById('gmSomniaBtn');
     const messageBox = document.getElementById('message-box');
     const messageTitle = document.getElementById('message-title');
@@ -76,12 +69,11 @@ window.onload = () => {
         landingPage.style.display = 'none';
         gameContainer.style.display = 'flex';
         initStage(1);
-        if (!gameRunning) { // Game loop ko ek hi baar start karega
+        if (!gameRunning) {
             gameLoop();
         }
     });
     
-    // Naya event listener "sayGMOnchain" function ke liye
     gmSomniaBtn.addEventListener('click', async () => {
         await sayGMOnchain();
     });
@@ -97,7 +89,7 @@ window.onload = () => {
         });
     }
 
-    // === PART 3: CORE GAME ENGINE (No Changes Here) ===
+    // === PART 3: CORE GAME ENGINE ===
     function initStage(levelNumber) {
         const level = stageData.find(s => s.level === levelNumber);
         if (!level) { 
@@ -249,7 +241,7 @@ window.onload = () => {
         }
     }
 
-    // === PART 4: DRAWING (No Changes Here) ===
+    // === PART 4: DRAWING ===
     function draw() {
         if (!player) return;
         drawBackground(ctx, camera, canvas);
@@ -270,7 +262,7 @@ window.onload = () => {
         drawScore(ctx, score, canvas);
     }
 
-    // === PART 5: HELPER FUNCTIONS (No Changes Here) ===
+    // === PART 5: HELPER FUNCTIONS ===
     function resetPlayer() { 
         createParticles(player.x + player.width / 2, player.y + player.height / 2, 50, '#ff4136', 5);
         initStage(currentStage);
@@ -295,7 +287,7 @@ window.onload = () => {
         }); 
     }
     
-    // === PART 6: KEYBOARD INPUT (No Changes Here) ===
+    // === PART 6: KEYBOARD INPUT ===
     window.addEventListener('keydown', e => { 
         if (e.code === 'ArrowRight' || e.code === 'KeyD') keys.right = true; 
         else if (e.code === 'ArrowLeft' || e.code === 'KeyA') keys.left = true; 
