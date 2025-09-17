@@ -17,19 +17,26 @@ export function initializeBackground(canvas) {
             opacity: Math.random() * 0.5 + 0.3
         });
     }
-    // Gears, UFOs, Rockets
-    for (let i = 0; i < 20; i++) {
-        const type = ['gear', 'ufo', 'rocket'][Math.floor(Math.random() * 3)];
-        backgroundElements.push({
-            type: type,
-            x: Math.random() * 50000,
-            y: Math.random() * 2000,
-            size: Math.random() * 40 + 20,
-            parallax: Math.random() * 0.3 + 0.6,
-            rotation: 0,
-            speed: (Math.random() - 0.5) * 0.5
-        });
-    }
+    
+    // Naya Animated Text Background ke liye
+    backgroundElements.push({
+        type: 'animatedText',
+        text: 'WE LOVE SOMNIA',
+        x: canvas.width * 1.5,
+        y: canvas.height * 0.4,
+        size: 80,
+        parallax: 0.3,
+        color: '#be29ec' // Somnia Purple
+    });
+    backgroundElements.push({
+        type: 'animatedText',
+        text: '@0xPaulThomas',
+        x: canvas.width * 3.5,
+        y: canvas.height * 0.6,
+        size: 60,
+        parallax: 0.35,
+        color: '#00e5ff' // Somnia Cyan
+    });
 }
 
 // Background ko draw karna
@@ -40,11 +47,10 @@ export function drawBackground(ctx, camera, canvas) {
     frame++;
 
     backgroundElements.forEach(el => {
-        const drawX = (el.x - camera.x * el.parallax) % (canvas.width + el.size) - el.size;
+        // Parallax effect ke liye calculations
+        const drawX = (el.x - camera.x * el.parallax);
         const drawY = (el.y - camera.y * el.parallax);
 
-        if (drawY < -el.size || drawY > canvas.height + el.size) return;
-        
         ctx.globalAlpha = el.opacity || 1;
         
         if (el.type === 'star') {
@@ -52,35 +58,23 @@ export function drawBackground(ctx, camera, canvas) {
             ctx.beginPath();
             ctx.arc(drawX, drawY, el.size / 2, 0, Math.PI * 2);
             ctx.fill();
-        } else if (el.type === 'gear') {
-             el.rotation += el.speed / 20;
-             ctx.strokeStyle = '#334155';
-             ctx.lineWidth = 4;
-             ctx.save();
-             ctx.translate(drawX, drawY);
-             ctx.rotate(el.rotation);
-             ctx.beginPath();
-             for (let i = 0; i < 8; i++) {
-                 ctx.rect(-el.size/2, -el.size/2, el.size, el.size);
-             }
-             ctx.stroke();
-             ctx.restore();
-        } else if (el.type === 'ufo') {
-            el.x += el.speed;
-            ctx.fillStyle = '#94a3b8';
-            ctx.beginPath();
-            ctx.ellipse(drawX, drawY, el.size, el.size / 2, 0, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.fillStyle = '#e2e8f0';
-            ctx.beginPath();
-            ctx.ellipse(drawX, drawY - el.size/3, el.size/2, el.size / 3, 0, 0, Math.PI * 2);
-            ctx.fill();
+        } else if (el.type === 'animatedText') {
+            const yBob = Math.sin(frame / 40 + el.x) * 20; // Text ko upar-neeche animate karega
+            ctx.font = `${el.size}px 'Press Start 2P'`;
+            ctx.fillStyle = el.color;
+            ctx.textAlign = 'center';
+            // Glow effect
+            ctx.shadowColor = el.color;
+            ctx.shadowBlur = 20;
+            ctx.fillText(el.text, drawX, drawY + yBob);
+            // Glow effect reset karna zaroori hai
+            ctx.shadowBlur = 0;
         }
         ctx.globalAlpha = 1;
     });
 }
 
-// Naya Cartoon Player
+// Naya PEPE jaisa Player
 export function drawPlayer(ctx, player) {
     const x = player.x;
     const y = player.y;
@@ -90,32 +84,45 @@ export function drawPlayer(ctx, player) {
     const bodyBob = player.onGround ? Math.sin(frame / 5) * 2 : 0;
 
     ctx.save();
-    ctx.translate(x + w / 2, y + h + bodyBob);
+    ctx.translate(x + w / 2, y + h / 2 + bodyBob);
     
-    // Body
-    ctx.fillStyle = '#8b5cf6'; // Purple
+    // Body (Pepe Green)
+    ctx.fillStyle = '#39a543';
     ctx.beginPath();
-    ctx.moveTo(-w / 2, 0);
-    ctx.quadraticCurveTo(0, -h, w / 2, 0);
+    ctx.ellipse(0, 0, w / 1.5, h / 2, 0, 0, Math.PI * 2);
     ctx.fill();
 
-    // Eye
+    // Eyes
     ctx.fillStyle = 'white';
     ctx.beginPath();
-    ctx.arc(0, -h/2, w/4, 0, Math.PI * 2);
+    ctx.arc(-w/4, -h/3, w/4, 0, Math.PI * 2); // Left Eye
+    ctx.arc(w/4, -h/3, w/4, 0, Math.PI * 2);  // Right Eye
     ctx.fill();
     
-    // Pupil
+    // Pupils
     ctx.fillStyle = 'black';
     ctx.beginPath();
-    const pupilX = player.facing > 0 ? w/12 : -w/12;
-    ctx.arc(pupilX, -h/2, w/8, 0, Math.PI * 2);
+    const pupilX = player.facing > 0 ? -w/5 : -w/3;
+    ctx.arc(pupilX + w/4, -h/3, w/10, 0, Math.PI * 2); // Left Pupil
+    ctx.arc(pupilX + w/1.4, -h/3, w/10, 0, Math.PI * 2); // Right Pupil
     ctx.fill();
+
+    // Player ke upar 'SOMI' naam
+    ctx.font = "18px 'Press Start 2P'";
+    ctx.fillStyle = "#f0f0f0";
+    ctx.textAlign = "center";
+    ctx.fillText("SOMI", 0, -h/2 - 30);
+
+    // Player ke pet par 'SOMI'
+    ctx.font = "bold 16px 'Press Start 2P'";
+    ctx.fillStyle = "white";
+    ctx.fillText("SOMI", 0, h/4);
     
     ctx.restore();
 }
 
-// Naya Cartoon Enemy
+// === Baaki functions mein koi change nahi ===
+
 export function drawEnemy(ctx, enemy) {
     const x = enemy.x;
     const y = enemy.y;
@@ -159,7 +166,6 @@ export function drawEnemy(ctx, enemy) {
     ctx.restore();
 }
 
-// Platform ko draw karna
 export function drawPlatform(ctx, p) {
     let color = '#64748b';
     if (p.type === 'moving') color = '#0ea5e9';
@@ -172,17 +178,14 @@ export function drawPlatform(ctx, p) {
     ctx.fillRect(p.x, p.y, p.width, 5);
 }
 
-// Goal ko Flag se replace kiya
 export function drawFlag(ctx, goal) {
     const poleX = goal.x + 10;
     const poleY = goal.y;
     const poleHeight = goal.h || 120;
     
-    // Pole
     ctx.fillStyle = '#94a3b8';
     ctx.fillRect(poleX, poleY, 10, poleHeight);
 
-    // Flag
     const flagY = poleY + Math.sin(frame / 20) * 10;
     ctx.fillStyle = '#22c55e';
     ctx.beginPath();
@@ -193,7 +196,6 @@ export function drawFlag(ctx, goal) {
     ctx.fill();
 }
 
-// Coin ko draw karna
 export function drawCoin(ctx, coin) {
     const bob = Math.sin((frame + coin.x) / 8) * 3;
     const size = 30;
@@ -201,13 +203,11 @@ export function drawCoin(ctx, coin) {
     ctx.save();
     ctx.translate(coin.x + size/2, coin.y + size/2 + bob);
 
-    // Coin body
     ctx.fillStyle = '#facc15'; // Gold
     ctx.beginPath();
     ctx.arc(0, 0, size/2, 0, Math.PI*2);
     ctx.fill();
 
-    // Highlight
     ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
     ctx.beginPath();
     ctx.arc(-5, -5, size/4, 0, Math.PI*2);
@@ -216,20 +216,11 @@ export function drawCoin(ctx, coin) {
     ctx.restore();
 }
 
-// Score ko draw karna
 export function drawScore(ctx, score, canvas) {
     ctx.font = "24px 'Press Start 2P'";
     ctx.fillStyle = "white";
     ctx.textAlign = "left";
     ctx.fillText(`SCORE: ${score}`, 20, 40);
-}
-
-
-export function drawProjectile(ctx, p) {
-    ctx.fillStyle = '#f97316';
-    ctx.beginPath();
-    ctx.arc(p.x + p.w / 2, p.y + p.h / 2, p.w / 2, 0, Math.PI * 2);
-    ctx.fill();
 }
 
 export function drawParticles(ctx, particles) {
