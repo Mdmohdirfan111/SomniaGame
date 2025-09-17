@@ -1,10 +1,4 @@
-// ===================================================================================
-// STAGES.JS - Game ke saare levels ka data
-//
-// Changes:
-// 1. Saare levels se 'shooter' type ke enemies hata diye gaye hain.
-// 2. Baaki sab pehle jaisa hai.
-// ===================================================================================
+console.log("SUCCESS: stages.js file has been loaded and executed!");
 
 export const stageData = [
     // === LEVEL 1: THE BEGINNING ===
@@ -177,4 +171,3 @@ export const stageData = [
         ]
     }
 ];
-
